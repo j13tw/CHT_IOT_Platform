@@ -76,7 +76,7 @@ def on_message(client, userdata, message):
         temp = str(data['Temperature'])
         humi = str(data['Humidity'])
         current = str(data['currents'])
-        SERVER_PUB_COMMAND = '[{"id":"Current", "value":["' + temp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + '"}, \
+        SERVER_PUB_COMMAND = '[{"id":"Current", "value":["' + current + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + '"}, \
                             {"id":"Humi", "value":["' + humi + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + '"}, \
                             {"id":"Temp", "value":["' + temp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + '"}]'
         print(SERVER_PUB_COMMAND)
