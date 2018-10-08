@@ -101,26 +101,26 @@ def on_message(client, userdata, message):
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
         SERVER_PUB_COMMAND = '[{"id":"IN_V110_A", "value":["' + IN_V110_A + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print("------------------------------------------------")
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"IN_V110_B", "value":["' + IN_V110_B + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_A", "value":["' + OUT_V110_A + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_B", "value":["' + OUT_V110_B + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_C", "value":["' + OUT_V110_C + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_D", "value":["' + OUT_V110_D + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_E", "value":["' + OUT_V110_E + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
 
     if (message.topic == CLIENT_MQTT_TOPIC_UPS_ROUTE_A):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_ROUTE_A + SERVER_MQTT_TOPIC_END
@@ -139,26 +139,26 @@ def on_message(client, userdata, message):
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
         SERVER_PUB_COMMAND = '[{"id":"IN_V110_A", "value":["' + IN_V110_A + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print("------------------------------------------------")
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"IN_V110_B", "value":["' + IN_V110_B + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_A", "value":["' + OUT_V110_A + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_B", "value":["' + OUT_V110_B + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_C", "value":["' + OUT_V110_C + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_D", "value":["' + OUT_V110_D + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_E", "value":["' + OUT_V110_E + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
 
     if (message.topic == CLIENT_MQTT_TOPIC_AIR_CONDITION):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_AIR_CONDITION + SERVER_MQTT_TOPIC_END
@@ -172,13 +172,14 @@ def on_message(client, userdata, message):
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
         SERVER_PUB_COMMAND = '[{"id":"Humi", "value":["' + humi + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+#        print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        time.sleep(0.01)
+        time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"Temp", "value":["' + temp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "."+ micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+#        print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
 #       print(SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
 
     if (message.topic == CLIENT_MQTT_TOPIC_POWER_METER):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_POWER_METER + SERVER_MQTT_TOPIC_END
@@ -197,6 +198,7 @@ def on_message(client, userdata, message):
          {"id":"Temp", "value":["' + temp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "."+ micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
         
 
     if (message.topic == CLIENT_MQTT_TOPIC_UPS_MONITOR):
@@ -258,6 +260,7 @@ def on_message(client, userdata, message):
         time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"outputWatt_A", "value":["' + outputWatt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
 
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_B + SERVER_MQTT_TOPIC_END
         SERVER_USER_NAME = SERVER_DEVICE_KEY_UPS_B
@@ -317,6 +320,7 @@ def on_message(client, userdata, message):
         time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"outputWatt_B", "value":["' + outputWatt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
     
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_CO2):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
@@ -329,6 +333,7 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"co2", "value":["' + str(message.payload.decode('utf-8')) + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
 
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_DC):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
@@ -341,6 +346,8 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"dewp", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
+
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_RH):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
         SERVER_USER_NAME = SERVER_DEVICE_KEY_DL303
@@ -352,6 +359,8 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"humi", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
+
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_TC):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
         SERVER_USER_NAME = SERVER_DEVICE_KEY_DL303
@@ -363,6 +372,7 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"temp", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
 
     if (message.topic == CLIENT_MQTT_TOPIC_ET7044):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_ET7044 + SERVER_MQTT_TOPIC_END
@@ -393,9 +403,11 @@ def on_message(client, userdata, message):
                             {"id":"sw8", "value":[' + sw[7] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        print("------------------------------------------------")
 
     print('MQTT To Server OK ! -->' , now)
     print('------------------------------------------------------')
+    time.sleep(0.1)
 
 # MQTT connection
 mqtt_sub = mqtt.Client("NUTC-IMAC")
