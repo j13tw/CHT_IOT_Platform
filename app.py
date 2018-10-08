@@ -21,12 +21,29 @@ CLIENT_MQTT_TOPIC_POWER_METER = "current"
 
 CLIENT_MQTT_TOPIC_UPS_MONITOR = "UPS_Monitor"
 
+CLIENT_MQTT_TOPIC_AIR_CONDITION = "air-conditioner-vent"
+
+CLIENT_MQTT_TOPIC_UPS_ROUTE_A = "cabinet_A"
+CLIENT_MQTT_TOPIC_UPS_ROUTE_B = "cabinet_B"
+
 SERVER_MQTT_SERVER = "iot.cht.com.tw"
 SERVER_MQTT_TOPIC_HEAD = "/v1/device/"
 SERVER_MQTT_TOPIC_END = "/rawdata"
 SERVER_MQTT_PORT = 1883
 SERVER_USER_NAME = ""
 SERVER_USER_PWD = ""
+
+SERVER_MQTT_TOPIC_UPS_ROUTE_A = "UPS_ROUTE_A"
+SERVER_DEVICE_ID_UPS_ROUTE_A = "7842144586"
+SERVER_DEVICE_KEY_UPS_ROUTE_A = "DKRWM147RKRFB09GCB"
+
+SERVER_MQTT_TOPIC_UPS_ROUTE_B = "UPS_ROUTE_B"
+SERVER_DEVICE_ID_UPS_ROUTE_B = "7847484162"
+SERVER_DEVICE_KEY_UPS_ROUTE_B = "DK1F110RXGX921MEKM"
+
+SERVER_MQTT_TOPIC_AIR_CONDITION = "AIR_CONDITION"
+SERVER_DEVICE_ID_AIR_CONDITION = "7842084764"
+SERVER_DEVICE_KEY_AIR_CONDITION = "DKW0TZ77U027FURXYK"
 
 SERVER_MQTT_TOPIC_DL303 = "DL303"
 SERVER_DEVICE_ID_DL303 = "7839288845"
@@ -64,8 +81,104 @@ def on_message(client, userdata, message):
     if (int(second) < 10): second = "0" + str(second)
     micro_second = str(int(datetime.datetime.now().microsecond/100))
     print('------------------------------------------------------')
-    print("message received " ,message.payload.decode('utf-8'))
-    print("message topic=",message.topic)
+    print("message received -->" ,message.payload.decode('utf-8'))
+    print("message topic =",message.topic)
+    
+    if (message.topic == CLIENT_MQTT_TOPIC_UPS_ROUTE_B):
+        SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_ROUTE_B + SERVER_MQTT_TOPIC_END
+        SERVER_USER_NAME = SERVER_DEVICE_KEY_UPS_ROUTE_B
+        SERVER_USER_PWD = SERVER_DEVICE_KEY_UPS_ROUTE_B
+        print(SERVER_TOPIC)
+        data = json.loads(message.payload)
+        IN_V110_A = str(data['IN_V110_A']) + "A"
+        IN_V110_B = str(data['IN_V110_B']) + "A"
+        OUT_V110_A = str(data['OUT_V110_A']) + "A"
+        OUT_V110_B = str(data['OUT_V110_B']) + "A"
+        OUT_V110_C = str(data['OUT_V110_C']) + "A"
+        OUT_V110_D = str(data['OUT_V110_D']) + "A"
+        OUT_V110_E = str(data['OUT_V110_E']) + "A"
+        mqtt_pub = mqtt.Client("CHT-IOT")
+        mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
+        mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
+        SERVER_PUB_COMMAND = '[{"id":"IN_V110_A", "value":["' + IN_V110_A + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        print("------------------------------------------------")
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"IN_V110_B", "value":["' + IN_V110_B + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_A", "value":["' + OUT_V110_A + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_B", "value":["' + OUT_V110_B + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_C", "value":["' + OUT_V110_C + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_D", "value":["' + OUT_V110_D + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_E", "value":["' + OUT_V110_E + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+
+    if (message.topic == CLIENT_MQTT_TOPIC_UPS_ROUTE_A):
+        SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_ROUTE_A + SERVER_MQTT_TOPIC_END
+        SERVER_USER_NAME = SERVER_DEVICE_KEY_UPS_ROUTE_A
+        SERVER_USER_PWD = SERVER_DEVICE_KEY_UPS_ROUTE_A
+        print(SERVER_TOPIC)
+        data = json.loads(message.payload)
+        IN_V110_A = str(data['IN_V110_A']) + "A"
+        IN_V110_B = str(data['IN_V110_B']) + "A"
+        OUT_V110_A = str(data['OUT_V110_A']) + "A"
+        OUT_V110_B = str(data['OUT_V110_B']) + "A"
+        OUT_V110_C = str(data['OUT_V110_C']) + "A"
+        OUT_V110_D = str(data['OUT_V110_D']) + "A"
+        OUT_V110_E = str(data['OUT_V110_E']) + "A"
+        mqtt_pub = mqtt.Client("CHT-IOT")
+        mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
+        mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
+        SERVER_PUB_COMMAND = '[{"id":"IN_V110_A", "value":["' + IN_V110_A + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        print("------------------------------------------------")
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"IN_V110_B", "value":["' + IN_V110_B + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_A", "value":["' + OUT_V110_A + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_B", "value":["' + OUT_V110_B + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_C", "value":["' + OUT_V110_C + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_D", "value":["' + OUT_V110_D + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"OUT_V110_E", "value":["' + OUT_V110_E + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+
+    if (message.topic == CLIENT_MQTT_TOPIC_AIR_CONDITION):
+        SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_AIR_CONDITION + SERVER_MQTT_TOPIC_END
+        SERVER_USER_NAME = SERVER_DEVICE_KEY_AIR_CONDITION
+        SERVER_USER_PWD = SERVER_DEVICE_KEY_AIR_CONDITION
+        print(SERVER_TOPIC)
+        data = json.loads(message.payload)
+        temp = str(data['Temperature']) + "℃"
+        humi = str(data['Humidity']) + "%"
+        mqtt_pub = mqtt.Client("CHT-IOT")
+        mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
+        mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
+        SERVER_PUB_COMMAND = '[{"id":"Humi", "value":["' + humi + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        print(SERVER_PUB_COMMAND)
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.01)
+        SERVER_PUB_COMMAND = '[{"id":"Temp", "value":["' + temp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "."+ micro_second + 'Z"}]'
+        print(SERVER_PUB_COMMAND)
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+#       print(SERVER_PUB_COMMAND)
 
     if (message.topic == CLIENT_MQTT_TOPIC_POWER_METER):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_POWER_METER + SERVER_MQTT_TOPIC_END
@@ -82,9 +195,9 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"Current", "value":["' + current + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "."+ micro_second + 'Z"}, \
         {"id":"Humi", "value":["' + humi + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"},\
          {"id":"Temp", "value":["' + temp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "."+ micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+#       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-
+        
 
     if (message.topic == CLIENT_MQTT_TOPIC_UPS_MONITOR):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_A + SERVER_MQTT_TOPIC_END
@@ -93,37 +206,57 @@ def on_message(client, userdata, message):
         print(SERVER_TOPIC)
         data = json.loads(message.payload)
         inputStatus = data['input_A']
-        inputLine = inputStatus['inputLine_A']
-        inputFreq = inputStatus['inputFreq_A']
-        inputVolt = inputStatus['inputVolt_A']
+        inputLine = inputStatus['inputLine_A'] + "線路" 
+        inputFreq = inputStatus['inputFreq_A'] + "HZ"
+        inputVolt = inputStatus['inputVolt_A'] + "V"
         outputStatus = data['output_A']
-        outputLine = outputStatus['outputLine_A']
-        outputFreq = outputStatus['outputFreq_A']
-        outputVolt = outputStatus['outputVolt_A']
-        outputAmp = outputStatus['outputAmp_A']
+        outputLine = outputStatus['outputLine_A'] + "線路"
+        outputFreq = outputStatus['outputFreq_A'] + "HZ"
+        outputVolt = outputStatus['outputVolt_A']+ "V"
+        outputAmp = outputStatus['outputAmp_A']+ "A"
         outputWatt = outputStatus['outputWatt_A']
-        outputPercent = outputStatus['outputPercent_A']
+        outputPercent = outputStatus['outputPercent_A'] + "%"
         battery_status = data['battery_A']['status']
-        batteryHealth = battery_status['batteryHealth_A']
         batteryTemp = battery_status['batteryTemp_A']
-        batteryVolt = battery_status['batteryVolt_A']
-        batteryRemain_Percent = battery_status['batteryRemain_Percent_A']
+        batteryVolt = battery_status['batteryVolt_A'] + "V"
+        batteryRemain_Percent = battery_status['batteryRemain_Percent_A'] + "%"
         mqtt_pub = mqtt.Client("CHT-IOT")
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
-        SERVER_PUB_COMMAND = '[{"id":"batteryRemain_Percent_A", "value":["' + batteryRemain_Percent + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"batteryTemp_A", "value":["' + batteryTemp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"batteryVolt_A", "value":["' + batteryVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"inputFreq_A", "value":["' + inputFreq + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"inputLine_A", "value":["' + inputLine + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"inputVolt_A", "value":["' + inputVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"outputAmp_A", "value":["' + outputAmp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"outputFreq_A", "value":["' + outputFreq + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"outputLine_A", "value":["' + outputLine + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"outputPercent_A", "value":["' + outputPercent + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"outputVolt_A", "value":["' + outputVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"outputWatt_A", "value":["' + outputWatt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+        SERVER_PUB_COMMAND = '[{"id":"batteryRemain_Percent_A", "value":["' + batteryRemain_Percent + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"batteryTemp_A", "value":["' + batteryTemp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"batteryVolt_A", "value":["' + batteryVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"inputFreq_A", "value":["' + inputFreq + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"inputLine_A", "value":["' + inputLine + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"inputVolt_A", "value":["' + inputVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputAmp_A", "value":["' + outputAmp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputFreq_A", "value":["' + outputFreq + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputLine_A", "value":["' + outputLine + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputPercent_A", "value":["' + outputPercent + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second+ "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputVolt_A", "value":["' + outputVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputWatt_A", "value":["' + outputWatt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
 
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_B + SERVER_MQTT_TOPIC_END
@@ -131,40 +264,60 @@ def on_message(client, userdata, message):
         SERVER_USER_PWD = SERVER_DEVICE_KEY_UPS_B
         print(SERVER_TOPIC)
         inputStatus = data['input_B']
-        inputLine = inputStatus['inputLine_B']
-        inputFreq = inputStatus['inputFreq_B']
-        inputVolt = inputStatus['inputVolt_B']
+        inputLine = inputStatus['inputLine_B'] + "線路"
+        inputFreq = inputStatus['inputFreq_B'] + "HZ"
+        inputVolt = inputStatus['inputVolt_B'] + "V"
         outputStatus = data['output_B']
-        outputLine = outputStatus['outputLine_B']
-        outputFreq = outputStatus['outputFreq_B']
-        outputVolt = outputStatus['outputVolt_B']
-        outputAmp = outputStatus['outputAmp_B']
+        outputLine = outputStatus['outputLine_B'] + "線路"
+        outputFreq = outputStatus['outputFreq_B'] + "HZ"
+        outputVolt = outputStatus['outputVolt_B'] + "V"
+        outputAmp = outputStatus['outputAmp_B'] + "A"
         outputWatt = outputStatus['outputWatt_B']
-        outputPersent = outputStatus['outputPercent_B']
+        outputPersent = outputStatus['outputPercent_B'] + "%"
         battery_status = data['battery_B']['status']
-        batteryHealth = battery_status['batteryHealth_B']
         batteryTemp = battery_status['batteryTemp_B']
-        batteryVolt = battery_status['batteryVolt_B']
-        batteryRemain_Percent = battery_status['batteryRemain_Percent_B']
+        batteryVolt = battery_status['batteryVolt_B'] + "V"
+        batteryRemain_Percent = battery_status['batteryRemain_Percent_B'] + "%"
 
         mqtt_pub = mqtt.Client("CHT-IOT")
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
-        SERVER_PUB_COMMAND = '[{"id":"batteryRemain_Percent_B", "value":["' + batteryRemain_Percent + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"batteryTemp_B", "value":["' + batteryTemp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"batteryVolt_B", "value":["' + batteryVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"inputFreq_B", "value":["' + inputFreq + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"inputLine_B", "value":["' + inputLine + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"inputVolt_B", "value":["' + inputVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"outputAmp_B", "value":["' + outputAmp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"outputFreq_B", "value":["' + outputFreq + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"outputLine_B", "value":["' + outputLine + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"outputPercent_B", "value":["' + outputPercent + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second+ "." + micro_second + 'Z"}, \
-        {"id":"outputVolt_B", "value":["' + outputVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-        {"id":"outputWatt_B", "value":["' + outputWatt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+        SERVER_PUB_COMMAND = '[{"id":"batteryRemain_Percent_B", "value":["' + batteryRemain_Percent + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"batteryTemp_B", "value":["' + batteryTemp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"batteryVolt_B", "value":["' + batteryVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"inputFreq_B", "value":["' + inputFreq + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"inputLine_B", "value":["' + inputLine + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"inputVolt_B", "value":["' + inputVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputAmp_B", "value":["' + outputAmp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputFreq_B", "value":["' + outputFreq + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputLine_B", "value":["' + outputLine + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputPercent_B", "value":["' + outputPercent + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second+ "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputVolt_B", "value":["' + outputVolt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+        time.sleep(0.1)
+        SERVER_PUB_COMMAND = '[{"id":"outputWatt_B", "value":["' + outputWatt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+    
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_CO2):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
         SERVER_USER_NAME = SERVER_DEVICE_KEY_DL303
@@ -173,7 +326,7 @@ def on_message(client, userdata, message):
         mqtt_pub = mqtt.Client("CHT-IOT")
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
-        SERVER_PUB_COMMAND = '{"id":"co2", "value":["' + str(message.payload.decode('utf-8')) + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}'
+        SERVER_PUB_COMMAND = '[{"id":"co2", "value":["' + str(message.payload.decode('utf-8')) + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
 
@@ -185,8 +338,8 @@ def on_message(client, userdata, message):
         mqtt_pub = mqtt.Client("CHT-IOT")
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
-        SERVER_PUB_COMMAND = '[{"id":"dewp", "value":["' + str(message.payload.decode('utf-8')) + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+        SERVER_PUB_COMMAND = '[{"id":"dewp", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+#       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_RH):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
@@ -196,8 +349,8 @@ def on_message(client, userdata, message):
         mqtt_pub = mqtt.Client("CHT-IOT")
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
-        SERVER_PUB_COMMAND = '[{"id":"humi", "value":["' + str(message.payload.decode('utf-8')) + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+        SERVER_PUB_COMMAND = '[{"id":"humi", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+#       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_TC):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
@@ -207,14 +360,18 @@ def on_message(client, userdata, message):
         mqtt_pub = mqtt.Client("CHT-IOT")
         mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
         mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
-        SERVER_PUB_COMMAND = '[{"id":"temp", "value":["' + str(message.payload.decode('utf-8')) + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+        SERVER_PUB_COMMAND = '[{"id":"temp", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+#       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+
     if (message.topic == CLIENT_MQTT_TOPIC_ET7044):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_ET7044 + SERVER_MQTT_TOPIC_END
         SERVER_USER_NAME = SERVER_DEVICE_KEY_ET7044
         SERVER_USER_PWD = SERVER_DEVICE_KEY_ET7044
         print(SERVER_TOPIC)
+        mqtt_pub = mqtt.Client("CHT-IOT")
+        mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
+        mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
         sw = ["0", "0", "0", "0", "0", "0", "0", "0"]
         message = message.payload.decode('utf8').split("[")[1].split("]")[0]
         for x in range(0, 8):
@@ -222,15 +379,20 @@ def on_message(client, userdata, message):
 #            print(status)
             if (status == "false"): sw[x] = "0"
             else: sw[x] = "1"
-#            print(sw[x])
-        SERVER_PUB_COMMAND = '[{"id":"sw1", "value":["' + sw[0] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, {"id":"sw2", "value":["' + sw[1] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw3", "value":["' + sw[2] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw4", "value":["' + sw[3] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw5", "value":["' + sw[4] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw6", "value":["' + sw[5] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw7", "value":["' + sw[6] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw8", "value":["' + sw[7] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-        print(SERVER_PUB_COMMAND)
+#            print(sw[x])7
+        sw[1] = "1"
+        sw[4] = "1"
+        sw[7] = "1"
+        SERVER_PUB_COMMAND = '[{"id":"sw1", "value":[' + sw[0] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"},\
+                            {"id":"sw2", "value":["' + sw[1] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
+                            {"id":"sw3", "value":[' + sw[2] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
+                            {"id":"sw4", "value":[' + sw[3] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
+                            {"id":"sw5", "value":[' + sw[4] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
+                            {"id":"sw6", "value":[' + sw[5] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
+                            {"id":"sw7", "value":[' + sw[6] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
+                            {"id":"sw8", "value":[' + sw[7] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+#       print(SERVER_PUB_COMMAND)
+        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
 
     print('MQTT To Server OK ! -->' , now)
     print('------------------------------------------------------')
@@ -246,4 +408,7 @@ mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_TC)
 mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_ET7044)
 mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_POWER_METER)
 mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_MONITOR)
+mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_AIR_CONDITION)
+mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_ROUTE_A)
+mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_ROUTE_B)
 mqtt_sub.loop_forever()
