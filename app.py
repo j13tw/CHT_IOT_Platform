@@ -65,6 +65,18 @@ SERVER_MQTT_TOPIC_UPS_B = "UPS_B"
 SERVER_DEVICE_ID_UPS_B = "7839666288"
 SERVER_DEVICE_KEY_UPS_B = "DKTGWYSE0GCMG2ZFYC"
 
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_CO2)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_DC)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_RH)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_TC)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_ET7044)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_POWER_METER)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_MONITOR)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_AIR_CONDITION)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_ROUTE_A)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_ROUTE_B)
 
 def on_message(client, userdata, message):
     now = datetime.datetime.now()
@@ -407,20 +419,11 @@ def on_message(client, userdata, message):
 
     print('MQTT To Server OK ! -->' , now)
     print('------------------------------------------------------')
-    time.sleep(0.1)
+    time.sleep(2)
 
 # MQTT connection
 mqtt_sub = mqtt.Client("NUTC-IMAC")
 mqtt_sub.on_message = on_message
+mqtt_sub.on_connect = on_connect
 mqtt_sub.connect(CLIENT_MQTT_SERVER, CLIENT_MQTT_PORT)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_CO2)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_DC)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_RH)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_TC)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_ET7044)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_POWER_METER)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_MONITOR)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_AIR_CONDITION)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_ROUTE_A)
-mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_ROUTE_B)
 mqtt_sub.loop_forever()
