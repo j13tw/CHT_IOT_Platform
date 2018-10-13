@@ -1,0 +1,1 @@
+{"Humidity":73.90, "Temperature":21.60, "currents":0.01, "control_A":0, "control_B":439}
