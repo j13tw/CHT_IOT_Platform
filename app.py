@@ -15,7 +15,8 @@ CLIENT_MQTT_TOPIC_DL303_RH = "DL303/RH"
 CLIENT_MQTT_TOPIC_DL303_TC = "DL303/TC"
 CLIENT_MQTT_TOPIC_DL303_DC = "DL303/DC"
 
-CLIENT_MQTT_TOPIC_ET7044 = "ET7044/write"
+CLIENT_MQTT_TOPIC_ET7044_W = "ET7044/write"
+CLIENT_MQTT_TOPIC_ET7044_R = "ET7044/DOstatus"
 
 CLIENT_MQTT_TOPIC_POWER_METER = "current"
 
@@ -52,7 +53,7 @@ SERVER_DEVICE_KEY_DL303 = "DK1CSFECPSXST91BKE"
 SERVER_MQTT_TOPIC_ET7044 = "ET7044"
 SERVER_DEVICE_ID_ET7044 = "7839306572"
 SERVER_DEVICE_KEY_ET7044 = "DKST1SRZ3CRBSZUKBF"
-ET7044_CONTROL = [False, False, False, False, False, False, False, False]
+ET7044_PRELOAD = [False, False, False, False, False, False, False, False]
 
 SERVER_MQTT_TOPIC_POWER_METER = "PowerMeter"
 SERVER_DEVICE_ID_POWER_METER = "7839467604"
@@ -66,13 +67,22 @@ SERVER_MQTT_TOPIC_UPS_B = "UPS_B"
 SERVER_DEVICE_ID_UPS_B = "7839666288"
 SERVER_DEVICE_KEY_UPS_B = "DKTGWYSE0GCMG2ZFYC"
 
+count_sw1 = 0
+count_sw2 = 0
+count_sw3 = 0
+count_sw4 = 0
+count_sw5 = 0
+count_sw6 = 0
+count_sw7 = 0
+count_sw8 = 0
+
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_CO2)
     mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_DC)
     mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_RH)
     mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_DL303_TC)
-    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_ET7044)
+    mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_ET7044_R)
     mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_POWER_METER)
     mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_UPS_MONITOR)
     mqtt_sub.subscribe(CLIENT_MQTT_TOPIC_AIR_CONDITION)
@@ -97,6 +107,35 @@ def on_message(client, userdata, message):
     print("message received -->" ,message.payload.decode('utf-8'))
     print("message topic =",message.topic)
     
+    if (message.topic == CLIENT_MQTT_TOPIC_ET7044_R):
+        SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_ET7044 + SERVER_MQTT_TOPIC_END
+        mqtt_pub = mqtt.Client("CHT-IOT")
+        SERVER_USER_NAME = SERVER_DEVICE_KEY_ET7044
+        SERVER_USER_PWD = SERVER_DEVICE_KEY_ET7044
+        mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
+        mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
+        sw = ["0", "0", "0", "0", "0", "0", "0", "0"]
+        message = message.payload.decode('utf8').split("[")[1].split("]")[0]
+        for x in range(0, 8):
+            new_status = 0
+            status = message.split(",")[x]
+#            print(status)
+            if (status == "false" and ET7044_PRELOAD[x] == True): 
+                sw[x] = "0"
+                new_status = 1
+                ET7044_PRELOAD[x] = False
+            elif(status == "true" and ET7044_PRELOAD[x] == False): 
+                sw[x] = "1"
+                new_status = 1
+                ET7044_PRELOAD[x] = True
+#           print(sw[x])
+            if(new_status == 1):
+                SERVER_PUB_COMMAND = '[{"id":"sw' + str(x+1) + '", "value":[' + sw[x] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+                print(SERVER_PUB_COMMAND)
+                new_status = 0
+                mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
+            print("------------------------------------------------")
+
     if (message.topic == CLIENT_MQTT_TOPIC_UPS_ROUTE_B):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_ROUTE_B + SERVER_MQTT_TOPIC_END
         SERVER_USER_NAME = SERVER_DEVICE_KEY_UPS_ROUTE_B
@@ -212,7 +251,6 @@ def on_message(client, userdata, message):
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
         print('------------------------------------------------------')
-        
 
     if (message.topic == CLIENT_MQTT_TOPIC_UPS_MONITOR):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_A + SERVER_MQTT_TOPIC_END
@@ -407,62 +445,106 @@ def on_connect_iot(client, userdata, flags, rc):
 
 def on_message_iot(client, userdata, message):
     print('------------------------------------------------------')
-    print("message received -->" ,message.payload.decode('utf-8'))
-    print("message topic =",message.topic)
+#    print("message received -->" ,message.payload.decode('utf-8'))
+#    print("message topic =",message.topic)
     SERVER_CONTROL_ET7044 = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_ET7044 + "/sensor"
-    print(SERVER_CONTROL_ET7044 + "/sw1" + SERVER_MQTT_TOPIC_END)
+    new_status = 0
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw1" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[0] = True
-        if(str(control) == "0"): ET7044_CONTROL[0] = False
-        print("sw1 ==>", ET7044_CONTROL[0])
+        if(str(control) == "1" and ET7044_PRELOAD[0] == False): 
+            ET7044_PRELOAD[0] = True
+            new_status = 1
+        if(str(control) == "0" and ET7044_PRELOAD[0] == True): 
+            ET7044_PRELOAD[0] = False
+            new_status = 1
+        print("sw1 ==>", ET7044_PRELOAD[0])
+        print('------------------------------------------------------')
+        print("new_status ==> ", new_status)
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw2" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[1] = True
-        if(str(control) == "0"): ET7044_CONTROL[1] = False
-        print("sw2 ==>", ET7044_CONTROL[1])
+        if(str(control) == "1" and ET7044_PRELOAD[1] == False): 
+            ET7044_PRELOAD[1] = True
+            new_status = 1
+        if(str(control) == "0" and ET7044_PRELOAD[1] == True): 
+            ET7044_PRELOAD[1] = False
+            new_status = 1
+        print("sw2 ==>", ET7044_PRELOAD[1])
+        print('------------------------------------------------------')
+        print("new_status ==> ", new_status)
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw3" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[2] = True
-        if(str(control) == "0"): ET7044_CONTROL[2] = False
-        print("sw3 ==>", ET7044_CONTROL[2])
+        if(str(control) == "1" and ET7044_PRELOAD[2] == False): 
+            ET7044_PRELOAD[2] = True
+            new_status = 1
+        if(str(control) == "0" and ET7044_PRELOAD[2] == True): 
+            ET7044_PRELOAD[2] = False
+            new_status = 1
+        print("sw3 ==>", ET7044_PRELOAD[2])
+        print('------------------------------------------------------')
+        print("new_status ==> ", new_status)
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw4" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[3] = True
-        if(str(control) == "0"): ET7044_CONTROL[3] = False
-        print("sw4 ==>", ET7044_CONTROL[3])
+        if(str(control) == "1" and ET7044_PRELOAD[3] == False): 
+            ET7044_PRELOAD[3] = True
+            new_status = 1
+        if(str(control) == "0" and ET7044_PRELOAD[3] == True): 
+            ET7044_PRELOAD[3] = False
+            new_status = 1
+        print("sw4 ==>", ET7044_PRELOAD[3])
+        print('------------------------------------------------------')
+        print("new_status ==> ", new_status)
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw5" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[4] = True
-        if(str(control) == "0"): ET7044_CONTROL[4] = False
-        print("sw5 ==>", ET7044_CONTROL[4])
+        if(str(control) == "1" and ET7044_PRELOAD[4] == False): 
+            ET7044_PRELOAD[4] = True
+            new_status = 1
+        if(str(control) == "0" and ET7044_PRELOAD[4] == True): 
+            ET7044_PRELOAD[4] = False
+            new_status = 1
+        print("sw5 ==>", ET7044_PRELOAD[4])
+        print('------------------------------------------------------')
+        print("new_status ==> ", new_status)
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw6" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[5] = True
-        if(str(control) == "0"): ET7044_CONTROL[5] = False
-        print("sw6 ==>", ET7044_CONTROL[5])
+        if(str(control) == "1" and ET7044_PRELOAD[5] == False): 
+            ET7044_PRELOAD[5] = True
+            new_status = 1
+        if(str(control) == "0" and ET7044_PRELOAD[5] == True): 
+            ET7044_PRELOAD[5] = False
+            new_status = 1
+        print("sw6 ==>", ET7044_PRELOAD[5])
+        print('------------------------------------------------------')
+        print("new_status ==> ", new_status)
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw7" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[6] = True
-        if(str(control) == "0"): ET7044_CONTROL[6] = False
-        print("sw7 ==>", ET7044_CONTROL[6])
+        if(str(control) == "1" and ET7044_PRELOAD[6] == False): 
+            ET7044_PRELOAD[6] = True
+            new_status = 1
+        if(str(control) == "0" and ET7044_PRELOAD[6] == True): 
+            ET7044_PRELOAD[6] = False
+            new_status = 1
+        print("sw7 ==>", ET7044_PRELOAD[6])
+        print('------------------------------------------------------')
+        print("new_status ==> ", new_status)
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw8" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[7] = True
-        if(str(control) == "0"): ET7044_CONTROL[7] = False
-        print("sw8 ==>", ET7044_CONTROL[7])
+        if(str(control) == "1" and ET7044_PRELOAD[7] == False): 
+            ET7044_PRELOAD[7] = True
+            new_status = 1
+        if(str(control) == "0" and ET7044_PRELOAD[7] == True): 
+            ET7044_PRELOAD[7] = False
+            new_status = 1
+        print("sw6 ==>", ET7044_PRELOAD[7])
         print('------------------------------------------------------')
-        SEND_ET7044_COMMAND = str(ET7044_CONTROL).lower()
+        print("new_status ==> ", new_status)
+    if(new_status == 1):
+        new_status = 0
+        SEND_ET7044_COMMAND = str(ET7044_PRELOAD).lower()
         print(SEND_ET7044_COMMAND)
         mqtt_pub_ET7044 = mqtt.Client("NUTC-IMAC-ET7044")
         mqtt_pub_ET7044.connect(CLIENT_MQTT_SERVER, CLIENT_MQTT_PORT)
-        mqtt_pub_ET7044.publish(CLIENT_MQTT_TOPIC_ET7044, SEND_ET7044_COMMAND)
+        mqtt_pub_ET7044.publish(CLIENT_MQTT_TOPIC_ET7044_W, SEND_ET7044_COMMAND)
         print('------------------------------------------------------')
-    
-
-
-
-
 
 while(1):
     # MQTT connection
