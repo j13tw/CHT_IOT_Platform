@@ -51,7 +51,7 @@ void loop()
         Serial.print(status_A);
         Serial.print(", \"control_B\":");
         Serial.print(status_B);
-        Serial.println("}");
+        Serial.print("}");
 //    }
-  delay(100);
+  delay(1000);
 }
