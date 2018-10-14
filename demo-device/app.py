@@ -109,7 +109,7 @@ while(1):
 			print('------------------------------------------------------')
 	else:
 		try:
-			demo = serial.Serial('COM26', 9600, timeout=1)
+			demo = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 		except:
 			demo = serial.Serial()
 			time.sleep(1)
