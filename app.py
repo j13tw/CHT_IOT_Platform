@@ -52,6 +52,7 @@ SERVER_DEVICE_KEY_DL303 = "DK1CSFECPSXST91BKE"
 SERVER_MQTT_TOPIC_ET7044 = "ET7044"
 SERVER_DEVICE_ID_ET7044 = "7839306572"
 SERVER_DEVICE_KEY_ET7044 = "DKST1SRZ3CRBSZUKBF"
+ET7044_CONTROL = [False, False, False, False, False, False, False, False]
 
 SERVER_MQTT_TOPIC_POWER_METER = "PowerMeter"
 SERVER_DEVICE_ID_POWER_METER = "7839467604"
@@ -132,7 +133,7 @@ def on_message(client, userdata, message):
         time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_E", "value":["' + OUT_V110_E + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
 
     if (message.topic == CLIENT_MQTT_TOPIC_UPS_ROUTE_A):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_ROUTE_A + SERVER_MQTT_TOPIC_END
@@ -170,7 +171,7 @@ def on_message(client, userdata, message):
         time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"OUT_V110_E", "value":["' + OUT_V110_E + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
 
     if (message.topic == CLIENT_MQTT_TOPIC_AIR_CONDITION):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_AIR_CONDITION + SERVER_MQTT_TOPIC_END
@@ -191,7 +192,7 @@ def on_message(client, userdata, message):
 #        print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
 #       print(SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
 
     if (message.topic == CLIENT_MQTT_TOPIC_POWER_METER):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_POWER_METER + SERVER_MQTT_TOPIC_END
@@ -210,7 +211,7 @@ def on_message(client, userdata, message):
          {"id":"Temp", "value":["' + temp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "."+ micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
         
 
     if (message.topic == CLIENT_MQTT_TOPIC_UPS_MONITOR):
@@ -272,7 +273,7 @@ def on_message(client, userdata, message):
         time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"outputWatt_A", "value":["' + outputWatt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
 
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_UPS_B + SERVER_MQTT_TOPIC_END
         SERVER_USER_NAME = SERVER_DEVICE_KEY_UPS_B
@@ -332,7 +333,7 @@ def on_message(client, userdata, message):
         time.sleep(0.1)
         SERVER_PUB_COMMAND = '[{"id":"outputWatt_B", "value":["' + outputWatt + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
     
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_CO2):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
@@ -345,7 +346,7 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"co2", "value":["' + str(message.payload.decode('utf-8')) + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
         print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
 
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_DC):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
@@ -358,7 +359,7 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"dewp", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
 
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_RH):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
@@ -371,7 +372,7 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"humi", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
 
     if (message.topic == CLIENT_MQTT_TOPIC_DL303_TC):
         SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_DL303 + SERVER_MQTT_TOPIC_END
@@ -384,7 +385,7 @@ def on_message(client, userdata, message):
         SERVER_PUB_COMMAND = '[{"id":"temp", "value":["' + str(message.payload.decode('utf-8'))  + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 #       print(SERVER_PUB_COMMAND)
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
+        print('------------------------------------------------------')
 
     print('MQTT To Server OK ! -->' , now)
     print('------------------------------------------------------')
@@ -408,57 +409,55 @@ def on_message_iot(client, userdata, message):
     print('------------------------------------------------------')
     print("message received -->" ,message.payload.decode('utf-8'))
     print("message topic =",message.topic)
-    ET7044_CONTROL = ["", "", "", "", "", "", "", ""]
     SERVER_CONTROL_ET7044 = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_ET7044 + "/sensor"
     print(SERVER_CONTROL_ET7044 + "/sw1" + SERVER_MQTT_TOPIC_END)
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw1" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[0] = "true"
-        if(str(control) == "0"): ET7044_CONTROL[0] = "false"
+        if(str(control) == "1"): ET7044_CONTROL[0] = True
+        if(str(control) == "0"): ET7044_CONTROL[0] = False
         print("sw1 ==>", ET7044_CONTROL[0])
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw2" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[1] = "true"
-        if(str(control) == "0"): ET7044_CONTROL[1] = "false"
+        if(str(control) == "1"): ET7044_CONTROL[1] = True
+        if(str(control) == "0"): ET7044_CONTROL[1] = False
         print("sw2 ==>", ET7044_CONTROL[1])
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw3" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[2] = "true"
-        if(str(control) == "0"): ET7044_CONTROL[2] = "false"
+        if(str(control) == "1"): ET7044_CONTROL[2] = True
+        if(str(control) == "0"): ET7044_CONTROL[2] = False
         print("sw3 ==>", ET7044_CONTROL[2])
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw4" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[3] = "true"
-        if(str(control) == "0"): ET7044_CONTROL[3] = "false"
+        if(str(control) == "1"): ET7044_CONTROL[3] = True
+        if(str(control) == "0"): ET7044_CONTROL[3] = False
         print("sw4 ==>", ET7044_CONTROL[3])
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw5" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[4] = "true"
-        if(str(control) == "0"): ET7044_CONTROL[4] = "false"
+        if(str(control) == "1"): ET7044_CONTROL[4] = True
+        if(str(control) == "0"): ET7044_CONTROL[4] = False
         print("sw5 ==>", ET7044_CONTROL[4])
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw6" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[5] = "true"
-        if(str(control) == "0"): ET7044_CONTROL[5] = "false"
+        if(str(control) == "1"): ET7044_CONTROL[5] = True
+        if(str(control) == "0"): ET7044_CONTROL[5] = False
         print("sw6 ==>", ET7044_CONTROL[5])
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw7" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[6] = "true"
-        if(str(control) == "0"): ET7044_CONTROL[6] = "false"
+        if(str(control) == "1"): ET7044_CONTROL[6] = True
+        if(str(control) == "0"): ET7044_CONTROL[6] = False
         print("sw7 ==>", ET7044_CONTROL[6])
     if (message.topic == SERVER_CONTROL_ET7044 + "/sw8" + SERVER_MQTT_TOPIC_END):
         control = json.loads(message.payload.decode('utf-8'))["value"][0]
-        if(str(control) == "1"): ET7044_CONTROL[7] = "true"
-        if(str(control) == "0"): ET7044_CONTROL[7] = "false"
+        if(str(control) == "1"): ET7044_CONTROL[7] = True
+        if(str(control) == "0"): ET7044_CONTROL[7] = False
         print("sw8 ==>", ET7044_CONTROL[7])
-        '''
+        print('------------------------------------------------------')
+        SEND_ET7044_COMMAND = str(ET7044_CONTROL).lower()
+        print(SEND_ET7044_COMMAND)
         mqtt_pub_ET7044 = mqtt.Client("NUTC-IMAC-ET7044")
         mqtt_pub_ET7044.connect(CLIENT_MQTT_SERVER, CLIENT_MQTT_PORT)
-        mqtt_pub_ET7044.publish(CLIENT_MQTT_TOPIC_ET7044, SERVER_PUB_COMMAND)
-        message = message.payload.decode('utf8').split("[")[1].split("]")[0]
-        print(SERVER_PUB_COMMAND)
-        '''
-        print("------------------------------------------------")
+        mqtt_pub_ET7044.publish(CLIENT_MQTT_TOPIC_ET7044, SEND_ET7044_COMMAND)
+        print('------------------------------------------------------')
     
 
 
@@ -472,11 +471,13 @@ while(1):
     mqtt_sub.on_connect = on_connect
     mqtt_sub.connect(CLIENT_MQTT_SERVER, CLIENT_MQTT_PORT)
     mqtt_sub.loop_start()
-    time.sleep(3)
+    time.sleep(1)
     mqtt_sub.loop_stop()
     mqtt_sub_iot = mqtt.Client("CHT-IOT-CONTROL")
     mqtt_sub_iot.on_message = on_message_iot
     mqtt_sub_iot.on_connect = on_connect_iot
     mqtt_sub_iot.username_pw_set(SERVER_DEVICE_KEY_ET7044, SERVER_DEVICE_KEY_ET7044)
     mqtt_sub_iot.connect(SERVER_MQTT_SERVER, CLIENT_MQTT_PORT)
-    mqtt_sub_iot.loop_forever()
+    mqtt_sub_iot.loop_start()
+    time.sleep(1)
+    mqtt_sub_iot.loop_stop()

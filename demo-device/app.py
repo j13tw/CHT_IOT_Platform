@@ -20,24 +20,32 @@ MQTT_TOPIC = MQTT_SERVER_HEAD + MQTT_DEVICE_TOPIC
 print(MQTT_SERVER)
 demo = serial.Serial()
 response_send = ["", "", "", "", ""]
+pre_status = "0"
+new_status = 0
+topic_count = 0
 
 def on_message(client, userdata, message):
-	global demo, pre_status, control
+	global demo, pre_status, control, new_status, topic_count
+	print("on message new_status ==> ", new_status)
 	print('------------------------------------------------------')
 	print("message received -->" ,message.payload.decode('utf-8'))
 	print("message topic =",message.topic)
-	control = json.loads(message.payload.decode("utf-8"))["value"][0]
-#	print(type(str(control)), control)
-	
-	if (str(control) == "1"): 
-		demo.write(b"A")
-		pre_status = str(control)
-		control = 1
-	if (str(control) == "0"): 
-		demo.write(b"Y")
-		pre_status = str(control)
-		control = 0	
-	print("control ==> ", control)
+	if(message.topic == "/v1/device/7864192663/sensor/Relay/rawdata" and topic_count == 0):
+		control = json.loads(message.payload.decode("utf-8"))["value"][0]
+	#	print(type(str(control)), control)
+		topic_count = topic_count + 1
+		if (str(control) == "1" and str(control) != pre_status): 
+			demo.write(b"A")
+			pre_status = str(control)
+			new_status = 1
+			print("ON")
+		if (str(control) == "0" and str(control) != pre_status): 
+			demo.write(b"Y")
+			pre_status = str(control)
+			new_status = 1
+			print("OFF")
+
+		print("control ON/OFF ==> ", control)
 
 def on_connect(client, userdata, flags, rc):
 	print("Connected with result code "+str(rc))
@@ -81,7 +89,7 @@ while(1):
 			response_send[1] = '[{"id":"Temp", "value":["' + Temp + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 			response_send[2] = '[{"id":"Current", "value":["' + Current + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 			response_send[3] = '[{"id":"Light", "value":["' + Light + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-			response_send[4] = '[{"id":"Relay", "value":["' + Relay + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
+			response_send[4] = '[{"id":"Relay", "value":["' + pre_status + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
 			print(response_send[4])
 		if (error == 0):
 			print('------------------------------------------------------')
@@ -102,6 +110,12 @@ while(1):
 				mqtt_pub.publish(MQTT_TOPIC + MQTT_DATA_COMMAND_END, response_send[3])
 				print('------------------------------------------------------4')
 				time.sleep(0.1)
+				print("new_status ==> ", new_status)
+				if(new_status == 1):
+					mqtt_pub.publish(MQTT_TOPIC + MQTT_DATA_COMMAND_END, response_send[4])
+					print('------------------------------------------------------4')
+					time.sleep(0.1)
+					new_status = 0
 				now = datetime.datetime.now()
 				print('MQTT To Server OK ! -->' , now)
 			except:
@@ -109,7 +123,7 @@ while(1):
 			print('------------------------------------------------------')
 	else:
 		try:
-			demo = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+			demo = serial.Serial('COM26', 9600, timeout=1)
 		except:
 			demo = serial.Serial()
 			time.sleep(1)
@@ -124,3 +138,4 @@ while(1):
 	mqtt_sub.loop_start()
 	time.sleep(1)
 	mqtt_sub.loop_stop()
+	topic_count = 0
