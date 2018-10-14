@@ -15,7 +15,7 @@ CLIENT_MQTT_TOPIC_DL303_RH = "DL303/RH"
 CLIENT_MQTT_TOPIC_DL303_TC = "DL303/TC"
 CLIENT_MQTT_TOPIC_DL303_DC = "DL303/DC"
 
-CLIENT_MQTT_TOPIC_ET7044 = "ET7044/DOstatus"
+CLIENT_MQTT_TOPIC_ET7044 = "ET7044/write"
 
 CLIENT_MQTT_TOPIC_POWER_METER = "current"
 
@@ -386,44 +386,97 @@ def on_message(client, userdata, message):
         mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
         print("------------------------------------------------")
 
-    if (message.topic == CLIENT_MQTT_TOPIC_ET7044):
-        SERVER_TOPIC = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_ET7044 + SERVER_MQTT_TOPIC_END
-        SERVER_USER_NAME = SERVER_DEVICE_KEY_ET7044
-        SERVER_USER_PWD = SERVER_DEVICE_KEY_ET7044
-        print(SERVER_TOPIC)
-        mqtt_pub = mqtt.Client("CHT-IOT")
-        mqtt_pub.username_pw_set(SERVER_USER_NAME, password=SERVER_USER_PWD)
-        mqtt_pub.connect(SERVER_MQTT_SERVER, SERVER_MQTT_PORT)
-        sw = ["0", "0", "0", "0", "0", "0", "0", "0"]
-        message = message.payload.decode('utf8').split("[")[1].split("]")[0]
-        for x in range(0, 8):
-            status = message.split(",")[x]
-#            print(status)
-            if (status == "false"): sw[x] = "0"
-            else: sw[x] = "1"
-#            print(sw[x])7
-        sw[1] = "1"
-        sw[4] = "1"
-        sw[7] = "1"
-        SERVER_PUB_COMMAND = '[{"id":"sw1", "value":[' + sw[0] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"},\
-                            {"id":"sw2", "value":["' + sw[1] + '"], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw3", "value":[' + sw[2] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw4", "value":[' + sw[3] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw5", "value":[' + sw[4] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw6", "value":[' + sw[5] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw7", "value":[' + sw[6] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}, \
-                            {"id":"sw8", "value":[' + sw[7] + '], "time":"' + year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "." + micro_second + 'Z"}]'
-#       print(SERVER_PUB_COMMAND)
-        mqtt_pub.publish(SERVER_TOPIC, SERVER_PUB_COMMAND)
-        print("------------------------------------------------")
-
     print('MQTT To Server OK ! -->' , now)
     print('------------------------------------------------------')
     time.sleep(2)
 
-# MQTT connection
-mqtt_sub = mqtt.Client("NUTC-IMAC")
-mqtt_sub.on_message = on_message
-mqtt_sub.on_connect = on_connect
-mqtt_sub.connect(CLIENT_MQTT_SERVER, CLIENT_MQTT_PORT)
-mqtt_sub.loop_forever()
+
+def on_connect_iot(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+    SERVER_CONTROL_ET7044 = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_ET7044 + "/sensor"
+    print(SERVER_CONTROL_ET7044 + "/sw1" + SERVER_MQTT_TOPIC_END)
+    mqtt_sub_iot.subscribe(SERVER_CONTROL_ET7044 + "/sw1" + SERVER_MQTT_TOPIC_END)
+    mqtt_sub_iot.subscribe(SERVER_CONTROL_ET7044 + "/sw2" + SERVER_MQTT_TOPIC_END)
+    mqtt_sub_iot.subscribe(SERVER_CONTROL_ET7044 + "/sw3" + SERVER_MQTT_TOPIC_END)
+    mqtt_sub_iot.subscribe(SERVER_CONTROL_ET7044 + "/sw4" + SERVER_MQTT_TOPIC_END)
+    mqtt_sub_iot.subscribe(SERVER_CONTROL_ET7044 + "/sw5" + SERVER_MQTT_TOPIC_END)
+    mqtt_sub_iot.subscribe(SERVER_CONTROL_ET7044 + "/sw6" + SERVER_MQTT_TOPIC_END)
+    mqtt_sub_iot.subscribe(SERVER_CONTROL_ET7044 + "/sw7" + SERVER_MQTT_TOPIC_END)
+    mqtt_sub_iot.subscribe(SERVER_CONTROL_ET7044 + "/sw8" + SERVER_MQTT_TOPIC_END)
+
+def on_message_iot(client, userdata, message):
+    print('------------------------------------------------------')
+    print("message received -->" ,message.payload.decode('utf-8'))
+    print("message topic =",message.topic)
+    ET7044_CONTROL = ["", "", "", "", "", "", "", ""]
+    SERVER_CONTROL_ET7044 = SERVER_MQTT_TOPIC_HEAD + SERVER_DEVICE_ID_ET7044 + "/sensor"
+    print(SERVER_CONTROL_ET7044 + "/sw1" + SERVER_MQTT_TOPIC_END)
+    if (message.topic == SERVER_CONTROL_ET7044 + "/sw1" + SERVER_MQTT_TOPIC_END):
+        control = json.loads(message.payload.decode('utf-8'))["value"][0]
+        if(str(control) == "1"): ET7044_CONTROL[0] = "true"
+        if(str(control) == "0"): ET7044_CONTROL[0] = "false"
+        print("sw1 ==>", ET7044_CONTROL[0])
+    if (message.topic == SERVER_CONTROL_ET7044 + "/sw2" + SERVER_MQTT_TOPIC_END):
+        control = json.loads(message.payload.decode('utf-8'))["value"][0]
+        if(str(control) == "1"): ET7044_CONTROL[1] = "true"
+        if(str(control) == "0"): ET7044_CONTROL[1] = "false"
+        print("sw2 ==>", ET7044_CONTROL[1])
+    if (message.topic == SERVER_CONTROL_ET7044 + "/sw3" + SERVER_MQTT_TOPIC_END):
+        control = json.loads(message.payload.decode('utf-8'))["value"][0]
+        if(str(control) == "1"): ET7044_CONTROL[2] = "true"
+        if(str(control) == "0"): ET7044_CONTROL[2] = "false"
+        print("sw3 ==>", ET7044_CONTROL[2])
+    if (message.topic == SERVER_CONTROL_ET7044 + "/sw4" + SERVER_MQTT_TOPIC_END):
+        control = json.loads(message.payload.decode('utf-8'))["value"][0]
+        if(str(control) == "1"): ET7044_CONTROL[3] = "true"
+        if(str(control) == "0"): ET7044_CONTROL[3] = "false"
+        print("sw4 ==>", ET7044_CONTROL[3])
+    if (message.topic == SERVER_CONTROL_ET7044 + "/sw5" + SERVER_MQTT_TOPIC_END):
+        control = json.loads(message.payload.decode('utf-8'))["value"][0]
+        if(str(control) == "1"): ET7044_CONTROL[4] = "true"
+        if(str(control) == "0"): ET7044_CONTROL[4] = "false"
+        print("sw5 ==>", ET7044_CONTROL[4])
+    if (message.topic == SERVER_CONTROL_ET7044 + "/sw6" + SERVER_MQTT_TOPIC_END):
+        control = json.loads(message.payload.decode('utf-8'))["value"][0]
+        if(str(control) == "1"): ET7044_CONTROL[5] = "true"
+        if(str(control) == "0"): ET7044_CONTROL[5] = "false"
+        print("sw6 ==>", ET7044_CONTROL[5])
+    if (message.topic == SERVER_CONTROL_ET7044 + "/sw7" + SERVER_MQTT_TOPIC_END):
+        control = json.loads(message.payload.decode('utf-8'))["value"][0]
+        if(str(control) == "1"): ET7044_CONTROL[6] = "true"
+        if(str(control) == "0"): ET7044_CONTROL[6] = "false"
+        print("sw7 ==>", ET7044_CONTROL[6])
+    if (message.topic == SERVER_CONTROL_ET7044 + "/sw8" + SERVER_MQTT_TOPIC_END):
+        control = json.loads(message.payload.decode('utf-8'))["value"][0]
+        if(str(control) == "1"): ET7044_CONTROL[7] = "true"
+        if(str(control) == "0"): ET7044_CONTROL[7] = "false"
+        print("sw8 ==>", ET7044_CONTROL[7])
+        '''
+        mqtt_pub_ET7044 = mqtt.Client("NUTC-IMAC-ET7044")
+        mqtt_pub_ET7044.connect(CLIENT_MQTT_SERVER, CLIENT_MQTT_PORT)
+        mqtt_pub_ET7044.publish(CLIENT_MQTT_TOPIC_ET7044, SERVER_PUB_COMMAND)
+        message = message.payload.decode('utf8').split("[")[1].split("]")[0]
+        print(SERVER_PUB_COMMAND)
+        '''
+        print("------------------------------------------------")
+    
+
+
+
+
+
+while(1):
+    # MQTT connection
+    mqtt_sub = mqtt.Client("NUTC-IMAC")
+    mqtt_sub.on_message = on_message
+    mqtt_sub.on_connect = on_connect
+    mqtt_sub.connect(CLIENT_MQTT_SERVER, CLIENT_MQTT_PORT)
+    mqtt_sub.loop_start()
+    time.sleep(3)
+    mqtt_sub.loop_stop()
+    mqtt_sub_iot = mqtt.Client("CHT-IOT-CONTROL")
+    mqtt_sub_iot.on_message = on_message_iot
+    mqtt_sub_iot.on_connect = on_connect_iot
+    mqtt_sub_iot.username_pw_set(SERVER_DEVICE_KEY_ET7044, SERVER_DEVICE_KEY_ET7044)
+    mqtt_sub_iot.connect(SERVER_MQTT_SERVER, CLIENT_MQTT_PORT)
+    mqtt_sub_iot.loop_forever()
